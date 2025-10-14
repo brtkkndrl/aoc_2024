@@ -1,3 +1,7 @@
+#
+*.txt
+sol_*
+
 # Prerequisites
 *.d
 
