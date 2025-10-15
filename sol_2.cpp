@@ -70,7 +70,7 @@ int part_two(){
 		}
 
 		auto find_bad_reading = [](std::vector<int> readings, int erase_index = -1){//returns problematic index if found, else -1
-			if(erase_index >= 0 && erase_index < readings.size())
+			if(erase_index >= 0 && erase_index < (int)readings.size())
 				readings.erase(readings.begin() + erase_index);
 			
 			if(readings.size() < 2)
@@ -79,16 +79,16 @@ int part_two(){
 
 			int first_diff = readings[1] - readings[0];
 
-			for(int i = 0; i < readings.size() - 1; i++){
-				int j = i + 1;
+			for(size_t i = 0; i < readings.size() - 1; i++){
+				size_t j = i + 1;
 				
 				int diff = readings[j] - readings[i];
 				int diff_abs = std::abs(diff);
 
 				if(diff_abs < 1 || diff_abs > 3)
-					return j;
+					return (int)j;
 				if((diff > 0) != (first_diff > 0))
-					return j;	
+					return (int)j;	
 			}
 
 			return -1;
