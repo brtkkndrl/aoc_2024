@@ -4,12 +4,9 @@
 #include <cstdlib>
 #include <vector>
 
-int part_one(){
-	std::vector<std::vector<char>> matrix;
-
+int read_input(std::vector<std::vector<char>>& matrix_out){
+	matrix_out.clear();
 	std::string line;
-
-	int total_count = 0;
 
 	while(std::getline(std::cin, line)){
 		if(line.empty()){
@@ -17,11 +14,20 @@ int part_one(){
 		}
 
 		std::vector<char> row (line.begin(), line.end());
-		matrix.push_back(row);
+		matrix_out.push_back(row);
 	}
 
-	int width = matrix[0].size();
-	int height = matrix.size();
+	int width = matrix_out[0].size();
+	return width;
+}
+
+int part_one(){
+	std::vector<std::vector<char>> matrix;
+
+	int width = read_input(matrix);
+	int height = width;
+
+	int total_count = 0;
 
 	constexpr int N = 6;
  	std::vector<char> buffers[N];
@@ -69,5 +75,36 @@ int part_one(){
 }
 
 int part_two(){
-	return 0;
+	std::vector<std::vector<char>> matrix;
+	int width = read_input(matrix);
+
+	int total_count = 0;
+
+	for(int i = 0; i < width-2; i++){
+		for(int j = 0; j < width-2; j++){
+			int cx = i+1;
+			int cy = j+1;
+
+			if(matrix[cy][cx] != 'A')// center A
+				continue;
+
+			char left_top = matrix[cy-1][cx-1];
+			char right_top = matrix[cy-1][cx+1];
+			char left_bottom = matrix[cy+1][cx-1];
+			char right_bottom = matrix[cy+1][cx+1];
+
+			//diagonal 1
+			if (!((left_top == 'M' && right_bottom == 'S') || (left_top == 'S' && right_bottom == 'M')))
+				continue;
+
+			//diagonal 25
+			if (!((left_bottom == 'M' && right_top == 'S') || (left_bottom == 'S' && right_top == 'M')))
+				continue;
+
+			total_count++;
+		}
+	}
+
+
+	return total_count;
 }
