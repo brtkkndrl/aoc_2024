@@ -1,0 +1,21 @@
+# Rust / Cargo
+target/
+**/*.rs.bk
+
+# Backup / Build files
+*.exe
+*.dll
+*.so
+*.dylib
+*.pdb
+
+# IDE / Editor files
+*.swp
+*.swo
+*.swn
+.idea/
+.vscode/
+.DS_Store
+
+# Logs
+*.log
