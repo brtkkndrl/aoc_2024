@@ -7,9 +7,9 @@
 #include <algorithm>
 #include <set>
 #include <list>
-#include <thread>
+#include <unordered_map>
 
-void blink_stones_pt1(std::list<long> &stones)
+void blink_stones_2(std::list<long> &stones)
 {
 	for (auto it = stones.begin(); it != stones.end(); it++)
 	{
@@ -33,7 +33,8 @@ void blink_stones_pt1(std::list<long> &stones)
 	}
 }
 
-void blink_stones_pt2(std::list<long> &stones)
+
+void blink_stones(std::list<long> &stones)
 {
 	for (auto it = stones.begin(); it != stones.end(); it++)
 	{
@@ -54,26 +55,6 @@ void blink_stones_pt2(std::list<long> &stones)
 		}
 
 		*it = (*it) * 2024;
-	}
-}
-
-void split_stones(const std::list<long> &stones, std::vector<std::list<long>> &thread_stones, int num_threads)
-{
-	int thread_size = stones.size() / num_threads;
-	int remaininig = stones.size() % num_threads;
-
-	auto stone_it = stones.begin();
-
-	for (int i = 0; i < num_threads; i++)
-	{
-		for (int j = 0; j < thread_size; j++)
-		{
-			thread_stones[i].push_back(*(stone_it++));
-		}
-		if (i >= num_threads - remaininig)
-		{ // start adding remaining at some point for semi uniform distribution
-			thread_stones[i].push_back(*(stone_it++));
-		}
 	}
 }
 
@@ -89,36 +70,41 @@ int part_one()
 
 	for (int blink = 0; blink < 25; blink++)
 	{
-		blink_stones_pt1(stones);
+		blink_stones(stones);
 	}
 
 	return stones.size();
 }
 
+
+// TODO use dynamic programming
 /// @brief
 /*
-	There exists a function how_many(stone_value: int, blinks: int) -> int
-	That determines into how many stones will a stone multiply into given it base value
-	For value 0
 	blink	|	stones
 	0		|	0
 	1		|	1
 	2		|	2024
 	3		|	20 24
-	4		|	2 0 2 4			// here 0 will follow pattern recursively
-	5		|	4048 1 4048 9096
-	6		|	40 48 40 48 90 96	+	zero_rec x 1
-	7		|	4 4 8 4 4 8 9 9 6	+ 	zero_rec x 4
+	4		|	2 0 2 4			// here 0 will follow pattern recursively, aslo 2 is present twice, no need to expand both
+	
+	// remove 0 and 2 from the stones, save them as add them later
+	0 todo (N_STEPS-4), 2 todo (N_STEPS-4)
+	
+	5		|	4048 9096
+	6		|	40 48 90 96
+	7		|	4 0 4 8 9 0 9 6 
 
-	how_many(0, B) = if B >= 4: how_many(2, B-4)*2 + how_many(4, B-4) + how_many(0, B-4)
+	// save duplicates (N_STEPS-7)
 
-	1,2,3,4 all follow:
+	0, 4, 0, 9
 
-	2024 | 4048 | 6072 | 9096
-	...
-	rec(4) + rec(0) + rec(2) x 2| rec(4) * 2 + 8 + rec(0) | 6 7 rec(2) + rec(0) | 9 9 6 + rec(0)
+	8		|	4 8 9 6
+
+
+
 	*/
 /// @return
+
 int part_two()
 {
 	std::list<long> stones;
@@ -129,54 +115,10 @@ int part_two()
 		stones.push_back(x);
 	}
 
-	int num_threads = std::thread::hardware_concurrency();
-	num_threads = num_threads > 0 ? num_threads : 4;
-
-	int blinks = 0;
-
-	constexpr int BLINKS_TARGET = 25;
-
-	for (; blinks < BLINKS_TARGET; blinks++)
+	for (int blink = 0; blink < 7; blink++)
 	{
-		if (stones.size() >= num_threads * 2)
-		{ // split into threads when at least 2 stones per thread
-			break;
-		}
-
-		blink_stones_pt2(stones);
+		blink_stones_2(stones);
 	}
 
-	if (blinks >= BLINKS_TARGET)
-	{
-		return stones.size();
-	}
-
-	std::vector<std::list<long>> thread_stones(num_threads);
-
-	split_stones(stones, thread_stones, num_threads);
-
-	std::vector<std::thread> threads;
-	for (int t_id = 0; t_id < num_threads; t_id++)
-	{
-		threads.emplace_back([&, blinks, t_id]()
-							 {
-			for(int b = blinks; b < BLINKS_TARGET; b++){
-				blink_stones_pt2(thread_stones[t_id]);
-				//std::cout<<b<<" ";
-			} });
-	}
-
-	for (auto &t : threads)
-		t.join();
-
-	long long size_sum = 0;
-
-	for (const auto &t_stones : thread_stones)
-	{
-		size_sum += t_stones.size();
-	}
-
-	std::cout << "The result in case it overflows: " << size_sum << "\n";
-
-	return size_sum;
+	return stones.size();
 }
