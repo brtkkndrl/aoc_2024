@@ -44,3 +44,5 @@
 *.dwo
 
 .vscode/
+
+bin/

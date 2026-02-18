@@ -1,13 +1,18 @@
 CXX=g++
 CXXFLAGS=-Wall
 
+BIN=bin
 SOL_FILES=$(wildcard sol_*.cpp)
-TARGETS=$(SOL_FILES:.cpp=.exe)
+TARGETS=$(patsubst %.cpp,$(BIN)/%,$(SOL_FILES))
 
-all: $(TARGETS)
+all: $(BIN) $(TARGETS)
 
-%.exe: %.cpp main.cpp
+$(BIN):
+	mkdir -p $(BIN)
+
+$(BIN)/%: %.cpp main.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:
-	rm -f $(TARGETS)
+	rm -f $(BIN)/*
+
