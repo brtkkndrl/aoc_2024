@@ -102,7 +102,7 @@ int part_two(){
 	gx = guard_pos.first;
 	gy = guard_pos.second;
 
-	int dirs[][2] = {{0,-1}, {1,0}, {0,1}, {-1,0}};//UP RIGHT DOWN LEFT
+	const int dirs[][2] = {{0,-1}, {1,0}, {0,1}, {-1,0}};//UP RIGHT DOWN LEFT
 	int dir_index = 0;
 
 	int width = matrix[0].size();
@@ -131,12 +131,12 @@ int part_two(){
 			if(is_next_pos_valid && matrix[next_y][next_x] == '.'){
 				possible_obstacles++;
 
-				std::cout<<"\n"<<((matrix[gy][gx] & DIR_FLAGS[0]) > 0)<<" "<<
-								((matrix[gy][gx] & DIR_FLAGS[1]) > 0)<<" "<<
-								((matrix[gy][gx] & DIR_FLAGS[2]) > 0)<<" "<<
-								((matrix[gy][gx] & DIR_FLAGS[3]) > 0)<<" ";
+				//std::cout<<"\n"<<((matrix[gy][gx] & DIR_FLAGS[0]) > 0)<<" "<<
+								//((matrix[gy][gx] & DIR_FLAGS[1]) > 0)<<" "<<
+								//((matrix[gy][gx] & DIR_FLAGS[2]) > 0)<<" "<<
+								//((matrix[gy][gx] & DIR_FLAGS[3]) > 0)<<" ";
 
-				std::cout<<"\nobstacle #"<<new_obs.size()<<" val: "<<(int)matrix[gy][gx]<<" , dirs: "<<dir_index<<" "<<next_dir;
+				//std::cout<<"\nobstacle #"<<new_obs.size()<<" val: "<<(int)matrix[gy][gx]<<" , dirs: "<<dir_index<<" "<<next_dir;
 
 				new_obs.push_back({next_x, next_y});
 			}
@@ -185,16 +185,20 @@ int part_two(){
 		}
 	}
 
-	for(auto pos : new_obs){
-		matrix[pos.second][pos.first] = 'O';
-	}
+	//for(auto pos : new_obs){
+		//matrix[pos.second][pos.first] = 'O';
+	//}
 
-	std::cout<<'\n';
-	for(const auto &row : matrix){
-		std::string str(row.begin(), row.end());
-		std::cout<<str<<'\n';
-	}
-	std::cout<<'\n';
+//	for(const auto& pos : new_obs){
+		//std::cout<<'\n';
+		//matrix[pos.second][pos.first] = 'O';
+		//for(const auto &row : matrix){
+			//std::string str(row.begin(), row.end());
+			//std::cout<<str<<'\n';
+		//}
+		//matrix[pos.second][pos.first] = '.';
+		//std::cout<<'\n';
+	//}
 
 	return possible_obstacles;
 }
